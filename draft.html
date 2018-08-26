@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css"/>
+
+	<title>Draft</title>
+</head>
+<body>
+	<div class="container-fluid">
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#boardTab">Draft Board</a></li>
+			<li><a data-toggle="tab" href="#teamTab">My Team</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="boardTab" role="tabpanel" >
+				<table id="data">
+					<thead>
+						<tr>
+							<th></th>
+							<th>#</th>
+							<th>Name</th>
+							<th>Pos</th>
+							<th>PPG</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane" id="teamTab" role="tabpanel">
+				<div class="row">
+					<div class="col-xs-6">	
+						<h2>My Team</h2>
+						<table id="team">
+							<thead>
+								<tr>
+									<th>Position</th>
+									<th>Name</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>QB</td>
+									<td id="qbName"></td>
+								</tr>
+								<tr>
+									<td>RB1</td>
+									<td id="rb1Name"></td>
+								</tr>
+								<tr>
+									<td>RB2</td>
+									<td id="rb2Name"></td>
+								</tr>
+								<tr>
+									<td>WR1</td>
+									<td id="wr1Name"></td>
+								</tr>
+								<tr>
+									<td>WR2</td>
+									<td id="wr2Name"></td>
+								</tr>
+								<tr>
+									<td>TE</td>
+									<td id="teName"></td>
+								</tr>
+								<tr>
+									<td>Flex</td>
+									<td id="flexName"></td>
+								</tr>
+								<tr>
+									<td>DST</td>
+									<td id="dstName"></td>
+								</tr>
+								<tr>
+									<td>K</td>
+									<td id="kName"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench1"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench2"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench3"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench4"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench5"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench6"></td>
+								</tr>
+								<tr>
+									<td>Bench</td>
+									<td id="bench7"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-xs-6">
+						<h2>Point Targets</h2>
+						<table id="targets">
+							<thead>
+								<tr>
+									<th>Position</th>
+									<th>PPG</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>QB</td>
+									<td id="qbTarget" class="text-danger">18.2</td>
+								</tr>
+								<tr>
+									<td>RB1</td>
+									<td id="rb1Target" class="text-danger">17.2</td>
+								</tr>
+								<tr>
+									<td>RB2</td>
+									<td id="rb2Target" class="text-danger">13</td>
+								</tr>
+								<tr>
+									<td>WR1</td>
+									<td id="wr1Target" class="text-danger">17.4</td>
+								</tr>
+								<tr>
+									<td>WR2</td>
+									<td id="wr2Target" class="text-danger">13</td>
+								</tr>
+								<tr>
+									<td>TE</td>
+									<td id="teTarget" class="text-danger">12.1</td>
+								</tr>
+								<tr>
+									<td>Flex</td>
+									<td id="flexTarget" class="text-danger">11.3</td>
+								</tr>
+								<tr>
+									<td>DST</td>
+									<td id="dstTarget" class="text-danger">9.2</td>
+								</tr>
+								<tr>
+									<td>K</td>
+									<td id="kTarget" class="text-danger">8.1</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		SCRAPE.qbs();
+		SCRAPE.rbs();
+		SCRAPE.wrs();
+		SCRAPE.tes();
+		SCRAPE.ks();
+		SCRAPE.dsts();
+	});
+
+	var DATA = (function(){
+
+		var players = {};
+		players.qb = [];
+		players.rb = [];
+		players.wr = [];
+		players.te = [];
+		players.k = [];
+		players.dst = [];
+
+		var allPlayers;
+
+		function initAllPlayers() {
+			allPlayers = players.qb.concat(players.rb).concat(players.wr).concat(players.te).concat(players.k).concat(players.dst);
+
+			allPlayers.sort(function(a,b) {
+				return b.pointDif - a.pointDif;
+			});
+			
+			allPlayers.forEach(function(player, i) {
+				player.rank = i + 1;
+				player.displayPosition = player.position + player.posrank;
+			});
+		}
+
+		function getAllPlayers() {
+			return allPlayers;
+		}
+
+		return {
+			players: players,
+			initAllPlayers : initAllPlayers,
+			getAllPlayers: getAllPlayers
+		}
+	})();
+
+	var DRAFTBOARD = (function(){
+
+		function pad(num, size) {
+			var s = num+"";
+			while (s.length < size) s = "0" + s;
+			return s;
+		}
+
+		function init() {
+			if(DATA.players.qb.length == 0 ||
+				DATA.players.rb.length == 0 ||
+				DATA.players.wr.length == 0 ||
+				DATA.players.te.length == 0 ||
+				DATA.players.k.length == 0 ||
+				DATA.players.dst.length == 0) {
+				return;
+			}
+			var aveQB = DATA.players.qb[14].ppg;
+			var aveRB = DATA.players.rb[46].ppg;
+			var aveWR = DATA.players.wr[53].ppg;
+			var aveTE = DATA.players.te[13].ppg;
+			var aveK = DATA.players.k[9].ppg;
+			var aveDST = DATA.players.dst[9].ppg;
+
+			var insertPointDif = function(players, baseline) {
+				players.forEach(function (player) {
+					player.pointDif = player.ppg - baseline;
+				});
+				players.sort(function(a,b) {
+					return b.pointDif - a.pointDif;
+				});
+				players.forEach(function(player, i) {
+					player.posrank = pad(i + 1, 2);
+				});
+			};
+			
+			insertPointDif(DATA.players.qb, aveQB);
+			insertPointDif(DATA.players.rb, aveRB);
+			insertPointDif(DATA.players.wr, aveWR);
+			insertPointDif(DATA.players.te, aveTE);
+			insertPointDif(DATA.players.k, aveK);
+			insertPointDif(DATA.players.dst, aveDST);
+			
+			DATA.initAllPlayers();
+			
+			
+			$('#data').DataTable( {
+				data: DATA.getAllPlayers(),
+				"lengthMenu": [[8, 15, 30, -1], [8, 15, 30, "All"]],
+				columns: [
+					{
+						"data" : "remove",
+						render: function ( data, type, row ) {
+							var i = DATA.getAllPlayers().indexOf(row);
+							return '<input id="no' + i + '" type="button" value="No" onclick="DRAFTBOARD.disable(' + i + ');" />';
+						}
+					},
+					{ "data" : "rank" },
+					{ "data" : "name" },
+					{ "data" : "displayPosition" },
+					{ "data" : "ppg" },
+					{
+						"data" : "draft",
+						render: function ( data, type, row ) {
+							var i = DATA.getAllPlayers().indexOf(row);
+							return '<input id="yes' + i + '" type="button" value="Yes" onclick="DRAFTBOARD.draft(' + i + ');" />';
+						}
+					}
+				]
+			} );
+		}
+
+		function disable(i) {
+			DATA.getAllPlayers().splice(i,1);
+			refreshBoard();
+		}
+
+		function draft(i) {
+			TEAM.draft(DATA.getAllPlayers()[i]);
+			disable(i);
+		}
+		
+		function refreshBoard(){
+			$('#data').dataTable().fnClearTable();
+			$('#data').dataTable().fnAddData(DATA.getAllPlayers());
+			// todo adjust sort by need		
+		}
+
+		return {
+			init : init,
+			disable : disable,
+			draft : draft
+		}
+
+	})();
+
+	var TEAM = (function(){
+
+		var myQbs = [];
+		var myRbs = [];
+		var myWrs = [];
+		var myFlexs = [];
+		var myTes = [];
+		var myDs = [];
+		var myKs = [];
+		var myBench = [];
+
+		function sortByPoints(players) {
+			players.sort(function(a,b) {
+				return b.ppg - a.ppg;
+			});
+		}
+
+		function draft(player) {
+			if(player.position === 'qb') {
+				myQbs.push(player);
+				sortByPoints(myQbs);
+				if(myQbs.length > 1) {
+					myBench.push(player);
+					sortByPoints(myBench);
+					myQbs.splice(1,1);
+				}
+			}
+			else if(player.position === 'rb') {
+				myRbs.push(player);
+				sortByPoints(myRbs);
+				if(myRbs.length > 2) {
+					myFlexs.push(player);
+					sortByPoints(myFlexs);
+					myRbs.splice(2,1);
+				}
+			}
+			else if(player.position === 'wr')  {
+				myWrs.push(player);
+				sortByPoints(myWrs);
+				if(myWrs.length > 2) {
+					myFlexs.push(player);
+					sortByPoints(myFlexs);
+					myWrs.splice(2,1);
+				}
+			}
+			else if(player.position === 'te')  {
+				myTes.push(player);
+				sortByPoints(myTes);
+				if(myTes.length > 1) {
+					myFlexs.push(player);
+					sortByPoints(myFlexs);
+					myTes.splice(1,1);
+				}
+			}
+			else if(player.position === 'dst')  {
+				myDs.push(player);
+				sortByPoints(myDs);
+				if(myDs.length > 1) {
+					myBench.push(player);
+					sortByPoints(myBench);
+					myDs.splice(1,1);
+				}
+			}
+			else if(player.position === 'k')  {
+				myKs.push(player);
+				sortByPoints(myKs);
+				if(myKs.length > 1) {
+					myBench.push(player);
+					sortByPoints(myBench);
+					myKs.splice(1,1);
+				}
+			}
+			if(myFlexs.length > 1) {
+				myBench.push(myFlexs[1]);
+				sortByPoints(myBench);
+				myFlexs.splice(1,1);
+			}
+
+			refreshTeam();
+		}
+		
+		function refreshTeam(){
+			// todo handle bench
+			function updateTarget(selector, points) {
+				$(selector).html(points);
+				$(selector).addClass('text-success');
+				$(selector).removeClass('text-danger');
+			}
+			var pointsDrafted = 0;
+			if(myQbs.length > 0) {
+				var points = myQbs[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#qbTarget", points);
+				$("#qbName").html(myQbs[0].name);
+			}
+			if(myRbs.length > 0) {
+				var points = myRbs[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#rb1Target", points);
+				$("#rb1Name").html(myRbs[0].name);
+			}
+			if(myRbs.length > 1) {
+				var points = myRbs[1].ppg;
+				pointsDrafted += points;
+				updateTarget("#rb2Target", points);
+				$("#rb2Name").html(myRbs[1].name);
+			}
+			if(myWrs.length > 0) {
+				var points = myWrs[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#wr1Target", points);
+				$("#wr1Name").html(myWrs[0].name);
+			}
+			if(myWrs.length > 1) {
+				var points = myWrs[1].ppg;
+				pointsDrafted += points;
+				updateTarget("#wr2Target", points);
+				$("#wr2Name").html(myWrs[1].name);
+			}
+			if(myTes.length > 0) {
+				var points = myTes[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#teTarget", points);
+				$("#teName").html(myTes[0].name);
+			}
+			if(myFlexs.length > 0) {
+				var points = myFlexs[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#flexTarget", points);
+				$("#flexName").html(myFlexs[0].name);
+			}
+			if(myDs.length > 0) {
+				var points = myDs[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#dstTarget", points);
+				$("#dstName").html(myDs[0].name);
+			}
+			if(myKs.length > 0) {
+				var points = myKs[0].ppg;
+				pointsDrafted += points;
+				updateTarget("#kTarget", points);
+				$("#kName").html(myKs[0].name);
+			}
+			
+			if(myBench.length > 0) {
+				var player = myBench[0];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench1").html(player.name);
+			}
+			if(myBench.length > 1) {
+				var player = myBench[1];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench2").html(player.name);
+			}
+			if(myBench.length > 2) {
+				var player = myBench[2];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench3").html(player.name);
+			}
+			if(myBench.length > 3) {
+				var player = myBench[3];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench4").html(player.name);
+			}
+			if(myBench.length > 4) {
+				var player = myBench[4];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench5").html(player.name);
+			}
+			if(myBench.length > 5) {
+				var player = myBench[5];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench6").html(player.name);
+			}
+			if(myBench.length > 6) {
+				var player = myBench[6];
+				// var points = Math.round(player.points/1.6)/10;
+				// $("#kTarget").html(points);
+				$("#bench7").html(player.name);
+			}
+			
+			var originalTarget = 130;
+
+			var remainingTarget = originalTarget - pointsDrafted;
+			
+			var remainingPositionBase = 0;
+			if(myQbs.length == 0) {
+				remainingPositionBase += 18.2;
+			}
+			if(myRbs.length == 0) {
+				remainingPositionBase += 30.2;
+			}
+			if(myRbs.length == 1) {
+				remainingPositionBase += 13;
+			}
+			if(myWrs.length == 0) {
+				remainingPositionBase += 30.4;
+			}
+			if(myWrs.length == 1) {
+				remainingPositionBase += 13;
+			}
+			if(myTes.length == 0) {
+				remainingPositionBase += 12.1;
+			}
+			if(myFlexs.length == 0) {
+				remainingPositionBase += 11.3;
+			}
+			if(myDs.length == 0) {
+				remainingPositionBase += 8;
+			}
+			if(myKs.length == 0) {
+				remainingPositionBase += 9.3;
+			}
+			
+			if(myQbs.length == 0) {
+				var qbPercent = 18.2/remainingPositionBase;
+				var qbTargetRaw = remainingTarget*qbPercent;
+				var qbTarget = qbTargetRaw.toString().substr(0,4);
+				$('#qbTarget').text(qbTarget);
+			}
+			if(myRbs.length < 1) {
+				var rb1Target = Math.round(remainingTarget*17.2/remainingPositionBase, 1);
+				$('#rb1Target').text(rb1Target);
+			}
+			if(myRbs.length < 2) {
+				var rb2Target = Math.round(remainingTarget*13.0/remainingPositionBase, 1);
+				$('#rb2Target').text(rb2Target);
+			}
+			if(myWrs.length < 1) {
+				var wr1Target = Math.round(remainingTarget*17.4/remainingPositionBase, 1);
+				$('#wr1Target').text(wr1Target);
+			}
+			if(myWrs.length < 2) {
+				var wr2Target = Math.round(remainingTarget*13.0/remainingPositionBase, 1);
+				$('#wr2Target').text(wr2Target);
+			}
+			if(myTes.length == 0) {
+				var teTarget = Math.round(remainingTarget*12.1/remainingPositionBase, 1);
+				$('#teTarget').text(teTarget);
+			}
+			if(myFlexs.length == 0) {
+				var flexTarget = Math.round(remainingTarget*11.3/remainingPositionBase, 1);
+				$('#flexTarget').text(flexTarget);
+			}
+			if(myDs.length == 0) {
+				var dstTarget = Math.round(remainingTarget*8.0/remainingPositionBase, 1);
+				$('#dstTarget').text(dstTarget);
+			}
+			if(myKs.length == 0) {
+				var kTarget = Math.round(remainingTarget*9.3/remainingPositionBase, 1);
+				$('#kTarget').text(kTarget);
+			}
+		}
+		
+		return {
+			refreshTeam : refreshTeam,
+			draft : draft
+		}
+	})();
+
+	var SCRAPE = (function(){
+		function scrape(pos) {
+			var length = 50;
+			switch(pos) {
+				case 'qb':
+				length = 20;
+				break;
+				case 'rb':
+				length = 60;
+				break;
+				case 'wr':
+				length = 70;
+				break;
+				case 'te':
+				length = 20;
+				break;
+				case 'k':
+				length = 12;
+				break;
+				case 'dst':
+				length = 12;
+				break;
+			}
+
+			var url = "http://allorigins.me/get?url=" + encodeURIComponent("http://www.fantasypros.com/nfl/projections/" + pos + ".php?scoring=PPR") + "&callback=?";
+			$.get(url, function(response) {
+				var table = response.substr(response.indexOf('<table'));
+				table = table.substr(0, table.indexOf('</table>') + 8);
+				var retArr=[];
+				$(table).find('tr').each(function(i, row) {
+					if(i < 2) {
+						return;
+					}
+					if(i>length + 1) {
+						return;
+					}
+					var cols = $(this).find('td');
+					
+					var retVal = {};
+					retVal.name = $(cols[0]).find('a').text();
+					retVal.position = pos;
+					retVal.points = $(cols[cols.length-1]).text();
+					retVal.ppg = Math.round(retVal.points/1.6)/10;
+					DATA.players[pos].push(retVal);
+				});
+				DRAFTBOARD.init();
+			});
+			
+		}
+
+		return {
+			qbs: function() {
+				scrape('qb');
+			},
+			rbs: function() {
+				scrape('rb');
+			},
+			wrs: function() {
+				scrape('wr');
+			},
+			tes: function() {
+				scrape('te');
+			},
+			ks: function() {
+				scrape('k');
+			},
+			dsts: function() {
+				scrape('dst');
+			}
+		}
+	})();
+</script>
+</html>
