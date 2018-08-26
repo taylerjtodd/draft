@@ -25,11 +25,9 @@
 						<tr>
 							<th></th>
 							<th>#</th>
-							<th>Tier</th>
+							<th>T</th>
 							<th>V#</th>
 							<th>Name</th>
-							<th>Pos</th>
-							<th>PPG</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -285,9 +283,12 @@
 					{ "data" : "rank" },
 					{ "data" : "tier" },
 					{ "data" : "vrank" },
-					{ "data" : "name" },
-					{ "data" : "displayPosition" },
-					{ "data" : "ppg" },
+					{ 
+						"data" : "name",
+						render : function ( data, type, row ) {
+							return row.name + ' - ' + row.displayPosition + ' - ' + row.ppg + ' ppg'
+						}
+					},
 					{
 						"data" : "draft",
 						render: function ( data, type, row ) {
