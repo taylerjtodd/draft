@@ -130,35 +130,35 @@
 								</tr>
 								<tr>
 									<td>RB1</td>
-									<td id="rb1Target" class="text-danger">17.2</td>
+									<td id="rb1Target" class="text-danger">18</td>
 								</tr>
 								<tr>
 									<td>RB2</td>
-									<td id="rb2Target" class="text-danger">13</td>
+									<td id="rb2Target" class="text-danger">14</td>
 								</tr>
 								<tr>
 									<td>WR1</td>
-									<td id="wr1Target" class="text-danger">17.4</td>
+									<td id="wr1Target" class="text-danger">18</td>
 								</tr>
 								<tr>
 									<td>WR2</td>
-									<td id="wr2Target" class="text-danger">13</td>
+									<td id="wr2Target" class="text-danger">14</td>
 								</tr>
 								<tr>
 									<td>TE</td>
-									<td id="teTarget" class="text-danger">12.1</td>
+									<td id="teTarget" class="text-danger">13</td>
 								</tr>
 								<tr>
 									<td>Flex</td>
-									<td id="flexTarget" class="text-danger">11.3</td>
+									<td id="flexTarget" class="text-danger">12</td>
 								</tr>
 								<tr>
 									<td>DST</td>
-									<td id="dstTarget" class="text-danger">9.2</td>
+									<td id="dstTarget" class="text-danger">8</td>
 								</tr>
 								<tr>
 									<td>K</td>
-									<td id="kTarget" class="text-danger">8.1</td>
+									<td id="kTarget" class="text-danger">10</td>
 								</tr>
 							</tbody>
 						</table>
@@ -239,16 +239,17 @@
 				DATA.players.dst.length == 0) {
 				return;
 			}
-			var aveQB = DATA.players.qb[14].ppg;
-			var aveRB = DATA.players.rb[46].ppg;
-			var aveWR = DATA.players.wr[53].ppg;
-			var aveTE = DATA.players.te[13].ppg;
-			var aveK = DATA.players.k[9].ppg;
-			var aveDST = DATA.players.dst[9].ppg;
+			var aveQB = DATA.players.qb[11].ppg;
+			var aveRB = DATA.players.rb[40].ppg;
+			var aveWR = DATA.players.wr[44].ppg;
+			var aveTE = DATA.players.te[8].ppg;
+			var aveK = DATA.players.k[1].ppg;
+			var aveDST = DATA.players.dst[2].ppg;
 
 			var insertPointDif = function(players, baseline) {
 				players.forEach(function (player) {
 					player.pointDif = player.ppg - baseline;
+					player.origPointDif = player.pointDif;
 				});
 				players.sort(function(a,b) {
 					return b.pointDif - a.pointDif;
@@ -512,7 +513,7 @@
 				$("#bench7").html(player.name);
 			}
 			
-			var originalTarget = 130;
+			var originalTarget = 125;
 
 			var remainingTarget = originalTarget - pointsDrafted;
 			
@@ -521,28 +522,28 @@
 				remainingPositionBase += 18.2;
 			}
 			if(myRbs.length == 0) {
-				remainingPositionBase += 30.2;
+				remainingPositionBase += 32;
 			}
 			if(myRbs.length == 1) {
-				remainingPositionBase += 13;
+				remainingPositionBase += 14;
 			}
 			if(myWrs.length == 0) {
-				remainingPositionBase += 30.4;
+				remainingPositionBase += 32;
 			}
 			if(myWrs.length == 1) {
-				remainingPositionBase += 13;
+				remainingPositionBase += 14;
 			}
 			if(myTes.length == 0) {
-				remainingPositionBase += 12.1;
+				remainingPositionBase += 13;
 			}
 			if(myFlexs.length == 0) {
-				remainingPositionBase += 11.3;
+				remainingPositionBase += 12;
 			}
 			if(myDs.length == 0) {
 				remainingPositionBase += 8;
 			}
 			if(myKs.length == 0) {
-				remainingPositionBase += 9.3;
+				remainingPositionBase += 10;
 			}
 			
 			if(myQbs.length == 0) {
@@ -552,27 +553,27 @@
 				$('#qbTarget').text(qbTarget);
 			}
 			if(myRbs.length < 1) {
-				var rb1Target = Math.round(remainingTarget*17.2/remainingPositionBase, 1);
+				var rb1Target = Math.round(remainingTarget*18/remainingPositionBase, 1);
 				$('#rb1Target').text(rb1Target);
 			}
 			if(myRbs.length < 2) {
-				var rb2Target = Math.round(remainingTarget*13.0/remainingPositionBase, 1);
+				var rb2Target = Math.round(remainingTarget*14/remainingPositionBase, 1);
 				$('#rb2Target').text(rb2Target);
 			}
 			if(myWrs.length < 1) {
-				var wr1Target = Math.round(remainingTarget*17.4/remainingPositionBase, 1);
+				var wr1Target = Math.round(remainingTarget*18/remainingPositionBase, 1);
 				$('#wr1Target').text(wr1Target);
 			}
 			if(myWrs.length < 2) {
-				var wr2Target = Math.round(remainingTarget*13.0/remainingPositionBase, 1);
+				var wr2Target = Math.round(remainingTarget*14/remainingPositionBase, 1);
 				$('#wr2Target').text(wr2Target);
 			}
 			if(myTes.length == 0) {
-				var teTarget = Math.round(remainingTarget*12.1/remainingPositionBase, 1);
+				var teTarget = Math.round(remainingTarget*13/remainingPositionBase, 1);
 				$('#teTarget').text(teTarget);
 			}
 			if(myFlexs.length == 0) {
-				var flexTarget = Math.round(remainingTarget*11.3/remainingPositionBase, 1);
+				var flexTarget = Math.round(remainingTarget*12/remainingPositionBase, 1);
 				$('#flexTarget').text(flexTarget);
 			}
 			if(myDs.length == 0) {
@@ -580,7 +581,7 @@
 				$('#dstTarget').text(dstTarget);
 			}
 			if(myKs.length == 0) {
-				var kTarget = Math.round(remainingTarget*9.3/remainingPositionBase, 1);
+				var kTarget = Math.round(remainingTarget*10/remainingPositionBase, 1);
 				$('#kTarget').text(kTarget);
 			}
 		}
@@ -596,22 +597,22 @@
 			var length = 50;
 			switch(pos) {
 				case 'qb':
-				length = 20;
+				length = 25;
 				break;
 				case 'rb':
-				length = 60;
+				length = 75;
 				break;
 				case 'wr':
-				length = 70;
+				length = 87;
 				break;
 				case 'te':
-				length = 20;
+				length = 25;
 				break;
 				case 'k':
-				length = 12;
+				length = 15;
 				break;
 				case 'dst':
-				length = 12;
+				length = 15;
 				break;
 			}
 
@@ -621,7 +622,7 @@
 				table = table.substr(0, table.indexOf('</table>') + 8);
 				var retArr=[];
 				$(table).find('tr').each(function(i, row) {
-					if(i < 2) {
+					if(['rb','wr','qb','te'].includes(pos) && i < 2 || ['k','dst'].includes(pos) && i < 1 ) {
 						return;
 					}
 					if(i>length + 1) {
