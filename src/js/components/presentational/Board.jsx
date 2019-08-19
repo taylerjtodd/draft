@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import DataLoad from "../../DataLoad.js"
+import DataTable from 'react-data-table-component';
+import Button from 'react-bootstrap/Button';
 
 class Board extends Component {
   constructor({ state, handleChange }) {
@@ -9,7 +10,9 @@ class Board extends Component {
     this.handleChange = handleChange;
 
     if (!state.players) {
-      this.handleChange({ type: 'SET_PLAYERS', players: this.initPlayers() });
+      const players = this.initPlayers();
+      this.handleChange({ type: 'SET_PLAYERS', players: players });
+      this.state.players = players;
     }
   }
 
@@ -71,14 +74,46 @@ class Board extends Component {
     return allPlayers;
   }
 
+  draftPlayer(row) {
+    console.log(row.target.getAttribute('data-rank'));
+  }
+
   render() {
-    const { currentTab } = this.state;
+    const {players} = this.state;
+    const columns = [
+      {
+        name: 'Rank',
+        selector: 'rank',
+        sortable: true,
+      },
+      {
+        name: 'Positional Rank',
+        selector: 'displayPosition',
+        sortable: true,
+      },
+      {
+        name: 'Name',
+        selector: 'name',
+        sortable: true,
+      },
+      {
+        name: 'PPG',
+        selector: 'ppg',
+        sortable: true,
+      },
+      {
+        cell: (row) => <Button raised primary data-rank={row.rank} onClick={this.draftPlayer}>Draft</Button>,
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+      },
+    ];
+
     return (
-      <input
-        type='text'
-        className="form-control"
-        value='Board'
-        onChange={() => this.handleChange({ type: 'BOARD_CHANGE' })}
+      <DataTable
+        title="Available Players"
+        columns={columns}
+        data={players}
       />
     );
   }
