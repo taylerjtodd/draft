@@ -4,10 +4,11 @@ import DataTable from 'react-data-table-component';
 import Button from 'react-bootstrap/Button';
 
 class Board extends Component {
-  constructor({ state, handleChange }) {
+  constructor({ state, handleChange, draftPlayer }) {
     super();
     this.state = state;
     this.handleChange = handleChange;
+    this.draftPlayer = draftPlayer;
 
     if (!state.players) {
       const players = this.initPlayers();
@@ -74,12 +75,9 @@ class Board extends Component {
     return allPlayers;
   }
 
-  draftPlayer(row) {
-    console.log(row.target.getAttribute('data-rank'));
-  }
-
   render() {
     const {players} = this.state;
+    const availablePlayers = players.filter(p => !p.rostered);
     const columns = [
       {
         name: 'Rank',
@@ -102,7 +100,7 @@ class Board extends Component {
         sortable: true,
       },
       {
-        cell: (row) => <Button raised primary data-rank={row.rank} onClick={this.draftPlayer}>Draft</Button>,
+        cell: (row) => <Button data-rank={row.rank} onClick={this.draftPlayer}>Draft</Button>,
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
@@ -113,7 +111,7 @@ class Board extends Component {
       <DataTable
         title="Available Players"
         columns={columns}
-        data={players}
+        data={availablePlayers}
       />
     );
   }

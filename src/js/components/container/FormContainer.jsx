@@ -10,6 +10,8 @@ class FormContainer extends Component {
             currentTab: window.location.hash
         };
         this.handleChange = this.handleChange.bind(this);
+        this.draftPlayer = this.draftPlayer.bind(this);
+
     }
 
     handleChange(event) {
@@ -29,6 +31,14 @@ class FormContainer extends Component {
         }
         console.log(this.state);
     }
+    
+    draftPlayer(row) {
+        let player = this.state.players.find(p => p.rank == row.target.getAttribute('data-rank'));
+        player.rostered = true;
+        player.drafted = true;
+        this.setState({
+            players: this.state.players
+        });    }
 
     render() {
         const { currentTab } = this.state;
@@ -70,6 +80,7 @@ class FormContainer extends Component {
                             <Board
                                 state={this.state}
                                 handleChange={this.handleChange}
+                                draftPlayer={this.draftPlayer}
                             />
                         </div>
                     ) : (
@@ -77,6 +88,7 @@ class FormContainer extends Component {
                                 <Board
                                     state={this.state}
                                     handleChange={this.handleChange}
+                                    draftPlayer={this.draftPlayer}
                                 />
                             </div>
                         )}
