@@ -10,8 +10,6 @@ class FormContainer extends Component {
             currentTab: window.location.hash
         };
         this.handleChange = this.handleChange.bind(this);
-        this.draftPlayer = this.draftPlayer.bind(this);
-
     }
 
     handleChange(event) {
@@ -28,17 +26,25 @@ class FormContainer extends Component {
                     players: event.players
                 });
                 break;
+            case 'DRAFT_PLAYER':
+                let playerDrafted = this.state.players.find(p => p.rank == event.rank);
+                playerDrafted.rostered = true;
+                playerDrafted.drafted = true;
+                this.setState({
+                    players: this.state.players
+                });
+                break;
+            case 'PLAYER_ROSTERED':
+                let playerTaken = this.state.players.find(p => p.rank == event.rank);
+                playerTaken.rostered = true;
+                playerTaken.drafted = false;
+                this.setState({
+                    players: this.state.players
+                });
+                break;
         }
         console.log(this.state);
     }
-    
-    draftPlayer(row) {
-        let player = this.state.players.find(p => p.rank == row.target.getAttribute('data-rank'));
-        player.rostered = true;
-        player.drafted = true;
-        this.setState({
-            players: this.state.players
-        });    }
 
     render() {
         const { currentTab } = this.state;
@@ -80,7 +86,6 @@ class FormContainer extends Component {
                             <Board
                                 state={this.state}
                                 handleChange={this.handleChange}
-                                draftPlayer={this.draftPlayer}
                             />
                         </div>
                     ) : (
@@ -88,30 +93,19 @@ class FormContainer extends Component {
                                 <Board
                                     state={this.state}
                                     handleChange={this.handleChange}
-                                    draftPlayer={this.draftPlayer}
                                 />
                             </div>
                         )}
                     {currentTab === '#team' ? (
                         <div className="tab-pane fade show active" id="team" role="tabpanel" aria-labelledby="home-tab">
                             <Team
-                                text="SEO title"
-                                label="seo_title"
-                                type="text"
-                                id="seo_title"
-                                value={currentTab}
-                                handleChange={this.handleChange}
-                            />
+                                    players={this.state.players}
+                                />
                         </div>
                     ) : (
                             <div className="tab-pane fade" id="team" role="tabpanel" aria-labelledby="home-tab">
                                 <Team
-                                    text="SEO title"
-                                    label="seo_title"
-                                    type="text"
-                                    id="seo_title"
-                                    value={currentTab}
-                                    handleChange={this.handleChange}
+                                    players={this.state.players}
                                 />
                             </div>
                         )}

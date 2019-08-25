@@ -4,17 +4,19 @@ import DataTable from 'react-data-table-component';
 import Button from 'react-bootstrap/Button';
 
 class Board extends Component {
-  constructor({ state, handleChange, draftPlayer }) {
+  constructor({ state, handleChange }) {
     super();
     this.state = state;
     this.handleChange = handleChange;
-    this.draftPlayer = draftPlayer;
 
     if (!state.players) {
       const players = this.initPlayers();
       this.handleChange({ type: 'SET_PLAYERS', players: players });
       this.state.players = players;
     }
+
+    this.draftPlayer = this.draftPlayer.bind(this);
+    this.playerRostered = this.playerRostered.bind(this);
   }
 
   initPlayers() {
@@ -28,12 +30,12 @@ class Board extends Component {
       }
     });
 
-    var aveQB = players.qb[11].ppg;
-    var aveRB = players.rb[40].ppg;
-    var aveWR = players.wr[44].ppg;
-    var aveTE = players.te[8].ppg;
-    var aveK = players.k[1].ppg;
-    var aveDST = players.dst[2].ppg;
+    var aveQB = players.qb[10].ppg;
+    var aveRB = players.rb[28].ppg;
+    var aveWR = players.wr[31].ppg;
+    var aveTE = players.te[10].ppg;
+    var aveK = players.k[10].ppg;
+    var aveDST = players.dst[10].ppg;
 
     function pad(num, size) {
       var s = num + "";
@@ -75,10 +77,24 @@ class Board extends Component {
     return allPlayers;
   }
 
+  draftPlayer(row) {
+    this.handleChange({ type: 'DRAFT_PLAYER', rank: row.target.getAttribute('data-rank') })
+  }
+
+  playerRostered(row) {
+    this.handleChange({ type: 'PLAYER_ROSTERED', rank: row.target.getAttribute('data-rank') })
+  }
+
   render() {
-    const {players} = this.state;
+    const { players } = this.state;
     const availablePlayers = players.filter(p => !p.rostered);
     const columns = [
+      {
+        cell: (row) => <Button data-rank={row.rank} onClick={this.playerRostered}>Taken</Button>,
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+      },
       {
         name: 'Rank',
         selector: 'rank',

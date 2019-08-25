@@ -1,25 +1,47 @@
 import React from "react";
-import PropTypes from "prop-types";
+import DataTable from 'react-data-table-component';
+// import Container from 'react-bootstrap/Container';
+// import Row from 'react-bootstrap/Row';
+// import Col from 'react-bootstrap/Col';
 
-const Team = ({ label, text, type, id, value, handleChange }) => (
-  <div className="form-group">
-    <label htmlFor={label}>{text}</label>
-    <input
-      type={type}
-      className="form-control"
-      id={id}
-      value={value}
-      onChange={handleChange}
-      required
-    />
-  </div>
-);
-Team.propTypes = {
-  label: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired
-};
+const Team = ({ players }) => {
+  const draftedPlayers = players ? players.filter(p => p.drafted) : [];
+  const columns = [
+    {
+      name: 'Rank',
+      selector: 'rank',
+      sortable: true,
+    },
+    {
+      name: 'Positional Rank',
+      selector: 'displayPosition',
+      sortable: true,
+    },
+    {
+      name: 'Name',
+      selector: 'name',
+      sortable: true,
+    },
+    {
+      name: 'PPG',
+      selector: 'ppg',
+      sortable: true,
+    }
+  ];
+  return (
+    // <Container>
+    //   <Row>
+    //     <Col xs={9}>
+          <DataTable
+            title="Drafted Players"
+            columns={columns}
+            data={draftedPlayers}
+          />
+    //     </Col>
+    //     <Col>Targets</Col>
+    //   </Row>
+    // </Container>
+  );
+}
+
 export default Team;
