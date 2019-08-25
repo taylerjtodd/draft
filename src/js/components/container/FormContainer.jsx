@@ -27,7 +27,7 @@ class FormContainer extends Component {
                 });
                 break;
             case 'DRAFT_PLAYER':
-                let playerDrafted = this.state.players.find(p => p.rank == event.rank);
+                let playerDrafted = this.state.players.find(p => p.vrank == event.rank);
                 playerDrafted.rostered = true;
                 playerDrafted.drafted = true;
                 this.setState({
@@ -35,7 +35,7 @@ class FormContainer extends Component {
                 });
                 break;
             case 'PLAYER_ROSTERED':
-                let playerTaken = this.state.players.find(p => p.rank == event.rank);
+                let playerTaken = this.state.players.find(p => p.vrank == event.rank);
                 playerTaken.rostered = true;
                 playerTaken.drafted = false;
                 this.setState({

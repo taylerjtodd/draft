@@ -9,11 +9,11 @@ const Team = ({ players }) => {
   const columns = [
     {
       name: 'Rank',
-      selector: 'rank',
+      selector: 'vrank',
       sortable: true,
     },
     {
-      name: 'Positional Rank',
+      name: 'Pos Rank',
       selector: 'displayPosition',
       sortable: true,
     },

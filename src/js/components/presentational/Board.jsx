@@ -34,8 +34,8 @@ class Board extends Component {
     var aveRB = players.rb[28].ppg;
     var aveWR = players.wr[31].ppg;
     var aveTE = players.te[10].ppg;
-    var aveK = players.k[10].ppg;
-    var aveDST = players.dst[10].ppg;
+    var aveK = players.k[5].ppg;
+    var aveDST = players.dst[5].ppg;
 
     function pad(num, size) {
       var s = num + "";
@@ -70,8 +70,8 @@ class Board extends Component {
 
     allPlayers.forEach(function (player, i) {
       player.vrank = i + 1;
-      player.rank = i + 1;
       player.displayPosition = player.position + player.posrank;
+      player.rank = parseInt(player.rank, 10);
     });
 
     return allPlayers;
@@ -90,18 +90,23 @@ class Board extends Component {
     const availablePlayers = players.filter(p => !p.rostered);
     const columns = [
       {
-        cell: (row) => <Button data-rank={row.rank} onClick={this.playerRostered}>Taken</Button>,
+        cell: (row) => <Button data-rank={row.vrank} onClick={this.playerRostered}>Taken</Button>,
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
       },
       {
-        name: 'Rank',
+        name: 'VBD Rank',
+        selector: 'vrank',
+        sortable: true,
+      },
+      {
+        name: 'ECR Rank',
         selector: 'rank',
         sortable: true,
       },
       {
-        name: 'Positional Rank',
+        name: 'Pos Rank',
         selector: 'displayPosition',
         sortable: true,
       },
@@ -116,7 +121,7 @@ class Board extends Component {
         sortable: true,
       },
       {
-        cell: (row) => <Button data-rank={row.rank} onClick={this.draftPlayer}>Draft</Button>,
+        cell: (row) => <Button data-rank={row.vrank} onClick={this.draftPlayer}>Draft</Button>,
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
