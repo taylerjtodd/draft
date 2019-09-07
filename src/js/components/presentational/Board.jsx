@@ -24,18 +24,25 @@ class Board extends Component {
     let rankings = DataLoad.ranks();
 
     rankings.forEach(player => {
-      var pl = players[player.pos].find(p => p.name == player.name);
-      if (pl) {
-        Object.assign(pl, player);
+      if (player.pos === 'dst') {
+        var pl = players[player.pos].find(p => p.name.substring(0,6) == player.name.substring(0,6));
+        if (pl) {
+          Object.assign(pl, player);
+        }
+      } else {
+        var pl = players[player.pos].find(p => p.name == player.name);
+        if (pl) {
+          Object.assign(pl, player);
+        }
       }
     });
 
     var aveQB = players.qb[10].ppg;
-    var aveRB = players.rb[28].ppg;
-    var aveWR = players.wr[31].ppg;
-    var aveTE = players.te[10].ppg;
-    var aveK = players.k[5].ppg;
-    var aveDST = players.dst[5].ppg;
+    var aveRB = players.rb[42].ppg;
+    var aveWR = players.wr[46].ppg;
+    var aveTE = players.te[13].ppg;
+    var aveK = players.k[3].ppg;
+    var aveDST = players.dst[3].ppg;
 
     function pad(num, size) {
       var s = num + "";
@@ -89,12 +96,12 @@ class Board extends Component {
     const { players } = this.state;
     const availablePlayers = players.filter(p => !p.rostered);
     const columns = [
-      {
-        cell: (row) => <Button data-rank={row.vrank} onClick={this.playerRostered}>Taken</Button>,
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-      },
+      // {
+      //   cell: (row) => <Button data-rank={row.vrank} onClick={this.playerRostered}>Taken</Button>,
+      //   ignoreRowClick: true,
+      //   allowOverflow: true,
+      //   button: true,
+      // },
       {
         name: 'VBD Rank',
         selector: 'vrank',
