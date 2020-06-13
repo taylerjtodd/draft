@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-// import Team from "../presentational/Team.jsx";
+import Team from "../presentational/Team.jsx";
 import Board from "../presentational/Board.jsx";
 
 class FormContainer extends Component {
@@ -65,7 +65,7 @@ class FormContainer extends Component {
                                     Board</a>
                             )}
                     </li>
-                    {/* <li className="nav-item">
+                    <li className="nav-item">
                         {currentTab === '#team' ? (
                             <a className="nav-link active"
                                 id="home-tab" data-toggle="tab" href="#team"
@@ -78,7 +78,7 @@ class FormContainer extends Component {
                                     role="tab" aria-controls="home" aria-selected="true">
                                     Team</a>
                             )}
-                    </li> */}
+                    </li>
                 </ul>
                 <div className="tab-content" id="myTabContent">
                     {currentTab === '#board' ? (
@@ -96,7 +96,7 @@ class FormContainer extends Component {
                                 />
                             </div>
                         )}
-                    {/* {currentTab === '#team' ? (
+                    {currentTab === '#team' ? (
                         <div className="tab-pane fade show active" id="team" role="tabpanel" aria-labelledby="home-tab">
                             <Team
                                     players={this.state.players}
@@ -108,7 +108,7 @@ class FormContainer extends Component {
                                     players={this.state.players}
                                 />
                             </div>
-                        )} */}
+                        )}
                 </div>
             </div>
         );

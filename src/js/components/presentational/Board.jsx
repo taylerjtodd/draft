@@ -96,12 +96,12 @@ class Board extends Component {
     const { players } = this.state;
     const availablePlayers = players.filter(p => !p.rostered);
     const columns = [
-      // {
-      //   cell: (row) => <Button data-rank={row.vrank} onClick={this.playerRostered}>Taken</Button>,
-      //   ignoreRowClick: true,
-      //   allowOverflow: true,
-      //   button: true,
-      // },
+      {
+        cell: (row) => <Button data-rank={row.vrank} onClick={this.playerRostered}>Taken</Button>,
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+      },
       {
         name: 'VBD Rank',
         selector: 'vrank',
